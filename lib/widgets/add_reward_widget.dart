@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:diabettys_reward/widgets/probability_slider_widget.dart';
+import 'package:diabettys_reward/widgets/exclusions_widget.dart';
 
-
-typedef AddRewardCallback = void Function(String rewardName, double winProbability);
+typedef AddRewardCallback = void Function(
+    String rewardName, double winProbability, List<String> exclusions);
 
 class AddRewardWidget extends StatefulWidget {
   final AddRewardCallback addReward;
@@ -14,13 +15,12 @@ class AddRewardWidget extends StatefulWidget {
   _AddRewardWidgetState createState() => _AddRewardWidgetState();
 }
 
-
 class _AddRewardWidgetState extends State<AddRewardWidget> {
   @override
-
   final _formKey = GlobalKey<FormState>();
   String _rewardName = '';
   double _winProbability = 0.5;
+  List<String> _exclusions = [];
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +48,21 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
                 },
               ),
               SizedBox(height: 20),
-              ProbabilitySlider(initialProbability: 0.5, onChanged: (value) {
-                setState(() {
-                  _winProbability = value;
-                });
-              }),
+              ProbabilitySlider(
+                  initialProbability: 0.5,
+                  onChanged: (value) {
+                    setState(() {
+                      _winProbability = value;
+                    });
+                  }),
               SizedBox(height: 20),
+              ExclusionsWidget(
+                  possibleExclusions: widget.exclusions,
+                  onChanged: (exclusions) {
+                    setState(() {
+                      _exclusions = exclusions;
+                    });
+                  }),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -61,6 +70,7 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
                     // Handle the form submission logic here
                     print('Reward Name: $_rewardName');
                     print('Win Probability: $_winProbability');
+                    widget.addReward(_rewardName, _winProbability, _exclusions);
                   }
                 },
                 child: Text('Submit'),

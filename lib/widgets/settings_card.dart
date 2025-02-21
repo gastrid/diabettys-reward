@@ -1,13 +1,13 @@
 import 'package:diabettys_reward/widgets/probability_slider_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:diabettys_reward/models/reward.dart';
-import 'package:diabettys_reward/providers/reward_provider.dart';
-import 'add_reward_widget.dart';
+import 'package:diabettys_reward/widgets/exclusions_widget.dart';
 
 class SettingsCard extends StatefulWidget {
   final RewardModel reward;
   final int index;
+  final Map<String, String> exclusions;
+
 
   final ValueChanged<String> onNameChanged;
   final ValueChanged<double> onProbabilityChanged;
@@ -17,6 +17,7 @@ class SettingsCard extends StatefulWidget {
     Key? key,
     required this.reward,
     required this.index,
+    required this.exclusions,
     required this.onNameChanged,
     required this.onProbabilityChanged,
     required this.onExclusionsChanged,
@@ -44,7 +45,12 @@ class _SettingsCardState extends State<SettingsCard> {
           ProbabilitySlider(
             initialProbability: widget.reward.winProbability,
             onChanged: widget.onProbabilityChanged,
-          )
+          ),
+          ExclusionsWidget(
+            possibleExclusions: widget.exclusions,
+            selectedExclusions: widget.reward.exclusions,
+            onChanged: widget.onExclusionsChanged,
+          ),
 
         ],
       ),

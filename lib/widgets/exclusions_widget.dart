@@ -19,12 +19,12 @@ class ExclusionsWidget extends StatefulWidget {
 }
 
 class _ExclusionsWidgetState extends State<ExclusionsWidget> {
-  late Map<String, String> _currentExclusions;
+  // late Map<String, String> _currentExclusions;
 
   @override
   void initState() {
     super.initState();
-    _currentExclusions = widget.possibleExclusions;
+    // _currentExclusions = widget.possibleExclusions;
   }
 
   @override

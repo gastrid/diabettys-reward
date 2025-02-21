@@ -49,10 +49,15 @@ class RewardProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  Future<void> addReward(RewardModel reward) async {
+  Future<void> addReward(String rewardName, double winProbability, List<String> exclusions) async {
     // TODO: add verification of no name duplication
     final uuid = Uuid().v4();
-    reward.id = uuid;
+    final reward = RewardModel(
+      id: uuid,
+      name: rewardName,
+      winProbability: winProbability,
+      exclusions: exclusions
+    );
     await _rewards.put(uuid, reward);
     notifyListeners();
   }

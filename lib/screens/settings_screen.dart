@@ -23,6 +23,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: Consumer<RewardProvider>(
         builder: (context, rewardProvider, child) {
           var rewards = rewardProvider.getRewards();
+          var exclusions = rewardProvider.getExclusions();
           return Column(children: [
             ListView.builder(
               itemCount: rewards.length,
@@ -31,6 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 return SettingsCard(
                   reward: reward,
                   index: index,
+                  exclusions: exclusions,
                   onProbabilityChanged: (newProb) =>
                       {_updateRewardWinProbability(reward.id, newProb)},
                   onExclusionsChanged: (newExclusions) => {
@@ -41,7 +43,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             OutlinedButton(onPressed: () {
-              showDialog(context: context, builder: (context) => AddRewardWidget());
+              showDialog(context: context, builder: (context) => AddRewardWidget(
+                addReward: _addReward,
+                exclusions: exclusions,
+              ));
             }, child: Icon(Icons.add))
           ]);
         },
@@ -68,5 +73,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       Provider.of<RewardProvider>(context, listen: false)
           .updateRewardExclusions(uuid, newExclusions);
     });
+  }
+
+
+  void _addReward(String rewardName, double winProbability, List<String> exclusions) {
+    setState(() {
+      Provider.of<RewardProvider>(context, listen: false)
+          .addReward(rewardName, winProbability, exclusions);
+    });
+
+
   }
 }

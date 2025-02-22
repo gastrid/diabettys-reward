@@ -71,6 +71,7 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
                     print('Reward Name: $_rewardName');
                     print('Win Probability: $_winProbability');
                     widget.addReward(_rewardName, _winProbability, _exclusions);
+                    Navigator.of(context).pop();
                   }
                 },
                 child: Text('Submit'),

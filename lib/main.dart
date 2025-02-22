@@ -19,6 +19,7 @@ void main() async{
   Hive.init(dir.path);
   await Hive.openBox<RewardModel>('rewards');
   await Hive.openBox<RewardOutcomeModel>('rewardOutcomes');
+  // Hive.deleteFromDisk();
 
   runApp(const MyApp());
 }

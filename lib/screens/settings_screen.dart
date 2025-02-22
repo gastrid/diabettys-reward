@@ -12,6 +12,8 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
+
+// PICKUP: pick hierarchy for exclusions
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
@@ -23,24 +25,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: Consumer<RewardProvider>(
         builder: (context, rewardProvider, child) {
           var rewards = rewardProvider.getRewards();
-          var exclusions = rewardProvider.getExclusions();
+          Map<String, String> exclusions = rewards.isEmpty ? {} : rewards.map((reward) => {reward.id: reward.name}).reduce((value, element) => value..addAll(element));
           return Column(children: [
-            ListView.builder(
-              itemCount: rewards.length,
-              itemBuilder: (context, index) {
-                var reward = rewards[index];
-                return SettingsCard(
-                  reward: reward,
-                  index: index,
-                  exclusions: exclusions,
-                  onProbabilityChanged: (newProb) =>
-                      {_updateRewardWinProbability(reward.id, newProb)},
-                  onExclusionsChanged: (newExclusions) => {
-                    _updateRewardExclusions(reward.id, newExclusions)
-                  },
-                  onNameChanged: (name) => _updateRewardName(reward.id, name),
-                );
-              },
+            Expanded(
+              child: ListView.builder(
+                itemCount: rewards.length,
+                itemBuilder: (context, index) {
+                  var reward = rewards[index];
+                  // Create a copy of the exclusions map
+                  final rewardExclusions = Map<String, String>.from(exclusions);
+                  rewardExclusions.remove(reward.id);
+                  return SettingsCard(
+                    reward: reward,
+                    index: index,
+                    exclusions: rewardExclusions,
+                    onProbabilityChanged: (newProb) =>
+                        {_updateRewardWinProbability(reward.id, newProb)},
+                    onExclusionsChanged: (newExclusions) => {
+                      _updateRewardExclusions(reward.id, newExclusions)
+                    },
+                    onNameChanged: (name) => _updateRewardName(reward.id, name),
+                  );
+                },
+              ),
             ),
             OutlinedButton(onPressed: () {
               showDialog(context: context, builder: (context) => AddRewardWidget(
@@ -75,13 +82,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-
   void _addReward(String rewardName, double winProbability, List<String> exclusions) {
     setState(() {
       Provider.of<RewardProvider>(context, listen: false)
           .addReward(rewardName, winProbability, exclusions);
     });
-
-
   }
 }

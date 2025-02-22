@@ -28,12 +28,13 @@ class _ProbabilitySliderState extends State<ProbabilitySlider> {
 
   @override
   Widget build(BuildContext context) {
+
     return Slider(
       value: _currentProbability,
       min: ProbabilityConfig.lowerBound,
       max: ProbabilityConfig.upperBound,
       divisions: ProbabilityConfig.divisions,
-      label: _currentProbability .toStringAsFixed(0) + '%',
+      label: _currentProbability .toStringAsFixed(1),
       onChanged: (value) {
         setState(() {
           _currentProbability = value;

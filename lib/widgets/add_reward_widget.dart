@@ -9,14 +9,13 @@ class AddRewardWidget extends StatefulWidget {
   final AddRewardCallback addReward;
   final Map<String, String> exclusions;
 
-  AddRewardWidget({required this.addReward, required this.exclusions});
+  const AddRewardWidget({super.key, required this.addReward, required this.exclusions});
 
   @override
   _AddRewardWidgetState createState() => _AddRewardWidgetState();
 }
 
 class _AddRewardWidgetState extends State<AddRewardWidget> {
-  @override
   final _formKey = GlobalKey<FormState>();
   String _rewardName = '';
   double _winProbability = 0.5;
@@ -26,7 +25,7 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Reward'),
+        title: const Text('Add Reward'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -36,7 +35,7 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
-                decoration: InputDecoration(labelText: 'Reward Name'),
+                decoration: const InputDecoration(labelText: 'Reward Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a reward name';
@@ -47,7 +46,7 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
                   _rewardName = value!;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ProbabilitySlider(
                   initialProbability: 0.5,
                   onChanged: (value) {
@@ -55,9 +54,10 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
                       _winProbability = value;
                     });
                   }),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ExclusionsWidget(
                   possibleExclusions: widget.exclusions,
+                  selectedExclusions: _exclusions,
                   onChanged: (exclusions) {
                     setState(() {
                       _exclusions = exclusions;
@@ -74,7 +74,7 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
                     Navigator.of(context).pop();
                   }
                 },
-                child: Text('Submit'),
+                child: const Text('Submit'),
               ),
             ],
           ),

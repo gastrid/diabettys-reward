@@ -6,7 +6,7 @@ part 'reward.g.dart';
 @HiveType(typeId: 0)
 class RewardModel {
   @HiveField(0)
-  String id;
+  final String id;
 
   @HiveField(1)
   String name;

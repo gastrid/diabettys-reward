@@ -3,23 +3,21 @@ import 'package:provider/provider.dart';
 import 'screens/scratch_card_screen.dart';
 import 'screens/settings_screen.dart';
 import 'package:diabettys_reward/providers/reward_provider.dart';
-import 'package:diabettys_reward/providers/reward_outcome_provider.dart';
+import 'package:diabettys_reward/providers/scratchcard_provider.dart';
+import 'package:diabettys_reward/providers/history_provider.dart';
 import 'package:hive/hive.dart';
-import 'package:diabettys_reward/models/reward_outcome.dart';
+import 'package:diabettys_reward/models/scratchcard.dart';
 import 'package:diabettys_reward/models/reward.dart';
 import 'package:path_provider/path_provider.dart';
 
-
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Hive.registerAdapter(RewardModelAdapter());
-  Hive.registerAdapter(RewardOutcomeModelAdapter());
+  Hive.registerAdapter(ScratchcardModelAdapter());
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
   await Hive.openBox<RewardModel>('rewards');
-  await Hive.openBox<RewardOutcomeModel>('rewardOutcomes');
-  // Hive.deleteFromDisk();
+  await Hive.openBox<List>('scratchcards');
 
   runApp(const MyApp());
 }
@@ -32,7 +30,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RewardProvider()),
-        ChangeNotifierProvider(create: (_) => RewardOutcomeProvider()),
+        ChangeNotifierProvider(create: (_) => ScratchcardProvider()),
+        ChangeNotifierProvider(create: (_) => HistoryProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

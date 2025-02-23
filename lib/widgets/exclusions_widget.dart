@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-
-
 class ExclusionsWidget extends StatefulWidget {
   final Map<String, String> possibleExclusions;
   final List<String>? selectedExclusions;
   final ValueChanged<List<String>> onChanged;
 
-  const ExclusionsWidget({
+  ExclusionsWidget({
     Key? key,
     required this.possibleExclusions,
     this.selectedExclusions,
@@ -29,50 +27,58 @@ class _ExclusionsWidgetState extends State<ExclusionsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    List<String> selectedExclusions =
+        widget.selectedExclusions != null ? widget.selectedExclusions! : [];
+    return Row(
       children: [
-        Text('Exclusions'),
+        Text('Exclusions',
+        style: Theme.of(context).textTheme.titleSmall,
+        ),
+        SizedBox(
+          width: 10,
+        ),
         Wrap(
           alignment: WrapAlignment.start,
           spacing: 5.0,
           children: widget.possibleExclusions.entries.map((entry) {
             return InputChip(
               label: Text(entry.value),
-              selected: widget.selectedExclusions!.contains(entry.key),
+              selected: selectedExclusions.contains(entry.key),
               onSelected: (bool selected) {
                 setState(() {
                   if (selected) {
-                    widget.onChanged([...widget.selectedExclusions!, entry.key]);
+                    widget.onChanged([...selectedExclusions, entry.key]);
                   } else {
-                    widget.onChanged(widget.selectedExclusions!.where((element) => element != entry.key).toList());
+                    widget.onChanged(selectedExclusions
+                        .where((element) => element != entry.key)
+                        .toList());
                   }
                 });
               },
             );
           }).toList(),
 
-
-              // List<Widget>.generate(inputs, (int index) {
-              //       return InputChip(
-              //         label: Text('Person ${index + 1}'),
-              //         selected: selectedIndex == index,
-              //         onSelected: (bool selected) {
-              //           setState(() {
-              //             if (selectedIndex == index) {
-              //               selectedIndex = null;
-              //             } else {
-              //               selectedIndex = index;
-              //             }
-              //           });
-              //         },
-              //         onDeleted: () {
-              //           setState(() {
-              //             inputs = inputs - 1;
-              //           });
-              //         },
-              //       );
-              //     }).toList(),
-                  ),
+          // List<Widget>.generate(inputs, (int index) {
+          //       return InputChip(
+          //         label: Text('Person ${index + 1}'),
+          //         selected: selectedIndex == index,
+          //         onSelected: (bool selected) {
+          //           setState(() {
+          //             if (selectedIndex == index) {
+          //               selectedIndex = null;
+          //             } else {
+          //               selectedIndex = index;
+          //             }
+          //           });
+          //         },
+          //         onDeleted: () {
+          //           setState(() {
+          //             inputs = inputs - 1;
+          //           });
+          //         },
+          //       );
+          //     }).toList(),
+        ),
       ],
     );
   }

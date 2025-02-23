@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:diabettys_reward/providers/reward_provider.dart';
-import 'package:diabettys_reward/models/reward.dart';
 import 'package:diabettys_reward/widgets/settings_card.dart';
 import 'package:diabettys_reward/widgets/add_reward_widget.dart';
 
@@ -17,7 +16,6 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    print('SettingsScreen built');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -39,6 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     reward: reward,
                     index: index,
                     exclusions: rewardExclusions,
+                    onDelete: _deleteReward,
                     onProbabilityChanged: (newProb) =>
                         {_updateRewardWinProbability(reward.id, newProb)},
                     onExclusionsChanged: (newExclusions) => {
@@ -54,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 addReward: _addReward,
                 exclusions: exclusions,
               ));
-            }, child: Icon(Icons.add))
+            }, child: const Icon(Icons.add))
           ]);
         },
       ),
@@ -77,6 +76,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _updateRewardExclusions(String uuid, List<String> newExclusions) {
     setState(() {
+      final rewards = Provider.of<RewardProvider>(context, listen: false)
+          .getRewards();
+      for (var id in newExclusions) {
+        final newExclusion = rewards.where((r) => r.id == id).first;
+        if (newExclusion.exclusions.contains(uuid)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Circular exclusion detected'),
+            ),
+            );
+            return;
+        }
+      }
       Provider.of<RewardProvider>(context, listen: false)
           .updateRewardExclusions(uuid, newExclusions);
     });
@@ -86,6 +98,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       Provider.of<RewardProvider>(context, listen: false)
           .addReward(rewardName, winProbability, exclusions);
+    });
+  }
+
+  void _deleteReward(String uuid) {
+    setState(() {
+      Provider.of<RewardProvider>(context, listen: false).deleteReward(uuid);
     });
   }
 }

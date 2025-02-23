@@ -69,6 +69,10 @@ class RewardProvider extends ChangeNotifier {
 
   Future<void> deleteReward(String uuid) async {
     await _rewards.delete(uuid);
+    for (var reward in _rewards.values) {
+      reward.exclusions.remove(uuid);
+      await _rewards.put(reward.id, reward);
+    }
     notifyListeners();
   }
 }

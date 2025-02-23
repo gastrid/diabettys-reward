@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:diabettys_reward/utils/values.dart';
+import 'package:diabettys_reward/utils/constants.dart';
 
 
 
@@ -29,18 +29,27 @@ class _ProbabilitySliderState extends State<ProbabilitySlider> {
   @override
   Widget build(BuildContext context) {
 
-    return Slider(
-      value: _currentProbability,
-      min: ProbabilityConfig.lowerBound,
-      max: ProbabilityConfig.upperBound,
-      divisions: ProbabilityConfig.divisions,
-      label: _currentProbability .toStringAsFixed(1),
-      onChanged: (value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+      Text(
+        'Probability',
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
+      Slider(
+        value: _currentProbability,
+        min: ProbabilityConfig.lowerBound,
+        max: ProbabilityConfig.upperBound,
+        divisions: ProbabilityConfig.divisions,
+        label: _currentProbability.toStringAsFixed(1),
+        onChanged: (value) {
         setState(() {
           _currentProbability = value;
         });
         widget.onChanged(value);
-      },
+        },
+      ),
+      ],
     );
   }
 }

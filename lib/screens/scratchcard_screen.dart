@@ -23,6 +23,7 @@ class ScratchcardScreen extends StatefulWidget {
 class _ScratchcardScreenState extends State<ScratchcardScreen> {
   late List<ScratchcardModel> _scratchcards;
   var _isLoading = false;
+  late String _todayString;
 
   @override
   void initState() {
@@ -48,6 +49,10 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
               itemCount: _scratchcards.length,
               itemBuilder: (ctx, index) {
                 final scratchcard = _scratchcards[index];
+                final scratchKey = GlobalKey<ScratcherState>();
+
+                print("${scratchcard.name} ${scratchcard.isScratched}");
+
                 return Column(
                   children: [
                     Text(scratchcard.name,
@@ -65,24 +70,51 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
-                        child: Scratcher(
-                            brushSize: 50,
-                            image: scratchcard.imagePath != null ?  Image.file(File(scratchcard.imagePath!)): null,
-                            color: Colors.grey,
-                            child: Container(
-                              height: 120,
-                              color:
-                                  scratchcard.isWon ? Colors.green : Colors.red,
-                              child: Center(
-                                child: Text(
-                                  scratchcard.isWon ? 'You won!' : 'No luck',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
+                        child: scratchcard.isScratched
+                            ? Container(
+                                height: 120,
+                                color: scratchcard.isWon
+                                    ? Colors.green
+                                    : Colors.red,
+                                child: Center(
+                                  child: Text(
+                                    scratchcard.isWon ? 'You won!' : 'No luck',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )),
+                              )
+                            : Scratcher(
+                                key: scratchKey,
+                                brushSize: 50,
+                                image: _getImage(scratchcard.imagePath),
+                                color: Colors.grey,
+                                threshold: 50,
+                                onThreshold: () {
+                                  scratchcard.isScratched = true;
+                                  // PICKUP: fix this reveal thing
+                                  _updateScratched(
+                                      _todayString, scratchcard.id);
+                                },
+                                child: Container(
+                                  height: 120,
+                                  color: scratchcard.isWon
+                                      ? Colors.green
+                                      : Colors.red,
+                                  child: Center(
+                                    child: Text(
+                                      scratchcard.isWon
+                                          ? 'You won!'
+                                          : 'No luck',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                )),
                       ),
                     ),
                   ],
@@ -90,6 +122,12 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
               },
             ),
     );
+  }
+
+  Future<void> _updateScratched(String today, String scratchcardId) async {
+    final scratchcardProvider =
+        Provider.of<ScratchcardProvider>(context, listen: false);
+    return scratchcardProvider.updateScratched(today, scratchcardId);
   }
 
   Future<void> _getScratchcards() async {
@@ -101,10 +139,10 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
     String latestActiveDate = await historyProvider.getLatestActiveDate();
 
     DateTime today = DateTime.now();
-    String todayString = DateFormat(dateFormat).format(today);
+    _todayString = DateFormat(dateFormat).format(today);
     List<ScratchcardModel>? scratchcards;
-    if (todayString == latestActiveDate) {
-      scratchcards = scratchcardProvider.getScratchcards(todayString);
+    if (_todayString == latestActiveDate) {
+      scratchcards = scratchcardProvider.getScratchcards(_todayString);
       if (scratchcards != null) {
         _scratchcards = scratchcards;
         return;
@@ -112,9 +150,9 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
     }
     if (scratchcards == null || scratchcards.isEmpty) {
       final rewards = rewardProvider.getRewards();
-      _generateScratchcards(rewards, todayString);
-      scratchcardProvider.addScratchcards(todayString, _scratchcards);
-      historyProvider.setLatestActiveDate(todayString);
+      _generateScratchcards(rewards, _todayString);
+      scratchcardProvider.addScratchcards(_todayString, _scratchcards);
+      historyProvider.setLatestActiveDate(_todayString);
     }
   }
 
@@ -123,14 +161,14 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
     for (var r in rewards) {
       final random = Random().nextDouble();
       final scratchCard = ScratchcardModel(
-          id: const Uuid().v4(),
-          rewardId: r.id,
-          name: r.name,
-          date: date,
-          isWon: random < r.winProbability,
-          exclusions: r.exclusions,
-          imagePath: r.imagePath,
-          );
+        id: const Uuid().v4(),
+        rewardId: r.id,
+        name: r.name,
+        date: date,
+        isWon: random < r.winProbability,
+        exclusions: r.exclusions,
+        imagePath: r.imagePath,
+      );
       scratchcards.add(scratchCard);
     }
 
@@ -144,5 +182,18 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
       }
     }
     _scratchcards = scratchcards;
+  }
+}
+
+Image _getImage(String? imagePath) {
+  if (imagePath == null) {
+    return Image.asset('assets/images/scratchcard.jpg');
+  } else {
+    var image = Image.file(
+      File(imagePath),
+      opacity: const AlwaysStoppedAnimation(0.5),
+    );
+
+    return image;
   }
 }

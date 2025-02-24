@@ -11,8 +11,6 @@ class ScratchcardProvider extends ChangeNotifier {
 
   }
 
-
-
   List<ScratchcardModel>? getScratchcards(String date) {
     final scrc = _scratchcards.get(date);
     final List<ScratchcardModel>? scratchcardList = scrc?.cast<ScratchcardModel>();
@@ -24,6 +22,14 @@ class ScratchcardProvider extends ChangeNotifier {
   Future<void> addScratchcards(String date, List<ScratchcardModel> scratchcards) async {
     await _scratchcards.put(date, scratchcards);
     notifyListeners();
+  }
+
+  Future<void> updateScratched(String today, String scratchcardId) async {
+    final scratchcards = getScratchcards(today);
+    if (scratchcards != null) {
+      scratchcards!.where((s) => s.id == scratchcardId).first.isScratched = true;
+      await addScratchcards(today, scratchcards);
+    } 
   }
 
 

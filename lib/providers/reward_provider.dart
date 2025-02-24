@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:diabettys_reward/models/reward.dart';
 import 'package:uuid/uuid.dart';
+import 'package:diabettys_reward/utils/exceptions.dart';
 
 class RewardProvider extends ChangeNotifier {
   late Box<RewardModel> _rewards;
@@ -49,15 +50,21 @@ class RewardProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  Future<void> addReward(String rewardName, double winProbability, List<String> exclusions) async {
-    // TODO: add verification of no name duplication
-    final uuid = Uuid().v4();
+
+  Future<void> addReward(String rewardName, double winProbability, List<String> exclusions, {String? imagePath}) async {
+    if (_rewards.values.any((reward) => reward.name == rewardName)) {
+      throw NameDuplicateException(name: rewardName);
+    }
+    final uuid = const Uuid().v4();
     final reward = RewardModel(
       id: uuid,
       name: rewardName,
       winProbability: winProbability,
       exclusions: exclusions
     );
+    if (imagePath != null) {
+      reward.imagePath = imagePath;
+    }
     await _rewards.put(uuid, reward);
     notifyListeners();
   }

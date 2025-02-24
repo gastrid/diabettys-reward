@@ -8,12 +8,13 @@ class ProbabilitySlider extends StatefulWidget {
   final ValueChanged<double> onChanged;
 
   const ProbabilitySlider({
-    Key? key,
+    super.key,
     required this.initialProbability,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProbabilitySliderState createState() => _ProbabilitySliderState();
 }
 

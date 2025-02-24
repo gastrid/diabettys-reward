@@ -17,11 +17,15 @@ class RewardModel {
   @HiveField(3)
   List<String> exclusions;
 
+  @HiveField(4)
+  String? imagePath;
+
   RewardModel({
     required this.id,
     required this.name,
     required this.winProbability,
     required this.exclusions,
+    this.imagePath,
   });
 
   // Method to check if a reward excludes another reward

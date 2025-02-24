@@ -94,11 +94,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  void _addReward(String rewardName, double winProbability, List<String> exclusions) {
-    setState(() {
-      Provider.of<RewardProvider>(context, listen: false)
-          .addReward(rewardName, winProbability, exclusions);
-    });
+  Future<void> _addReward(String rewardName, double winProbability, List<String> exclusions, {String? imagePath}) async {
+    await Provider.of<RewardProvider>(context, listen: false)
+        .addReward(rewardName, winProbability, exclusions, imagePath: imagePath);
+    setState(() {});
   }
 
   void _deleteReward(String uuid) {

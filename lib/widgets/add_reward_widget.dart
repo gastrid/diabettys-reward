@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:diabettys_reward/widgets/probability_slider_widget.dart';
 import 'package:diabettys_reward/widgets/exclusions_widget.dart';
+import 'package:diabettys_reward/utils/exceptions.dart';
+import 'package:diabettys_reward/widgets/image_upload_widget.dart';
 
-typedef AddRewardCallback = void Function(
-    String rewardName, double winProbability, List<String> exclusions);
+typedef AddRewardCallback = Future<void> Function(
+    String rewardName, double winProbability, List<String> exclusions, {String? imagePath} );
 
 class AddRewardWidget extends StatefulWidget {
   final AddRewardCallback addReward;
   final Map<String, String> exclusions;
 
-  const AddRewardWidget({super.key, required this.addReward, required this.exclusions});
+  const AddRewardWidget(
+      {super.key, required this.addReward, required this.exclusions});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddRewardWidgetState createState() => _AddRewardWidgetState();
 }
 
@@ -20,6 +24,7 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
   String _rewardName = '';
   double _winProbability = 0.5;
   List<String> _exclusions = [];
+  String? _imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +68,29 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
                       _exclusions = exclusions;
                     });
                   }),
+              ImageUploadWidget(
+                onChanged: (imagePath) {
+                    setState(() {
+                      _imagePath = imagePath;
+                    });
+                }
+              ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    // Handle the form submission logic here
-                    print('Reward Name: $_rewardName');
-                    print('Win Probability: $_winProbability');
-                    widget.addReward(_rewardName, _winProbability, _exclusions);
-                    Navigator.of(context).pop();
+
+                    try {
+                      await widget.addReward(
+                          _rewardName, _winProbability, _exclusions, imagePath: _imagePath);
+                      Navigator.of(context).pop();
+                    } on NameDuplicateException catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(e.message),
+                        ),
+                      );
+                    }
                   }
                 },
                 child: const Text('Submit'),

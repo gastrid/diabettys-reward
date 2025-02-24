@@ -5,14 +5,15 @@ class ExclusionsWidget extends StatefulWidget {
   final List<String>? selectedExclusions;
   final ValueChanged<List<String>> onChanged;
 
-  ExclusionsWidget({
-    Key? key,
+  const ExclusionsWidget({
+    super.key,
     required this.possibleExclusions,
     this.selectedExclusions,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _ExclusionsWidgetState createState() => _ExclusionsWidgetState();
 }
 
@@ -34,50 +35,33 @@ class _ExclusionsWidgetState extends State<ExclusionsWidget> {
         Text('Exclusions',
         style: Theme.of(context).textTheme.titleSmall,
         ),
-        SizedBox(
+        const SizedBox(
           width: 10,
         ),
-        Wrap(
-          alignment: WrapAlignment.start,
-          spacing: 5.0,
-          children: widget.possibleExclusions.entries.map((entry) {
-            return InputChip(
-              label: Text(entry.value),
-              selected: selectedExclusions.contains(entry.key),
-              onSelected: (bool selected) {
-                setState(() {
-                  if (selected) {
-                    widget.onChanged([...selectedExclusions, entry.key]);
-                  } else {
-                    widget.onChanged(selectedExclusions
-                        .where((element) => element != entry.key)
-                        .toList());
-                  }
-                });
-              },
-            );
-          }).toList(),
-
-          // List<Widget>.generate(inputs, (int index) {
-          //       return InputChip(
-          //         label: Text('Person ${index + 1}'),
-          //         selected: selectedIndex == index,
-          //         onSelected: (bool selected) {
-          //           setState(() {
-          //             if (selectedIndex == index) {
-          //               selectedIndex = null;
-          //             } else {
-          //               selectedIndex = index;
-          //             }
-          //           });
-          //         },
-          //         onDeleted: () {
-          //           setState(() {
-          //             inputs = inputs - 1;
-          //           });
-          //         },
-          //       );
-          //     }).toList(),
+        Expanded(
+          child: Wrap(
+            spacing: 5.0,
+            children: widget.possibleExclusions.entries.map((entry) {
+              return InputChip(
+                label: Text(entry.value),
+                visualDensity: VisualDensity.compact,
+                labelPadding: const EdgeInsets.symmetric(horizontal: 0.0),
+                selected: selectedExclusions.contains(entry.key),
+                showCheckmark: false,
+                onSelected: (bool selected) {
+                  setState(() {
+                    if (selected) {
+                      widget.onChanged([...selectedExclusions, entry.key]);
+                    } else {
+                      widget.onChanged(selectedExclusions
+                          .where((element) => element != entry.key)
+                          .toList());
+                    }
+                  });
+                },
+              );
+            }).toList(),
+          ),
         ),
       ],
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/scratch_card_screen.dart';
+import 'screens/scratchcard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'package:diabettys_reward/providers/reward_provider.dart';
 import 'package:diabettys_reward/providers/scratchcard_provider.dart';
@@ -16,6 +16,8 @@ void main() async {
   Hive.registerAdapter(ScratchcardModelAdapter());
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
+  // TODO: delete
+  Hive.deleteBoxFromDisk("scratchcards");
   await Hive.openBox<RewardModel>('rewards');
   await Hive.openBox<List>('scratchcards');
 
@@ -49,6 +51,7 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -56,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    ScratchCardScreen(),
+    ScratchcardScreen(),
     SettingsScreen(),
   ];
 

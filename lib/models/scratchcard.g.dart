@@ -1,43 +1,48 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'reward.dart';
+part of 'scratchcard.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class RewardModelAdapter extends TypeAdapter<RewardModel> {
+class ScratchcardModelAdapter extends TypeAdapter<ScratchcardModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  RewardModel read(BinaryReader reader) {
+  ScratchcardModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return RewardModel(
+    return ScratchcardModel(
       id: fields[0] as String,
       name: fields[1] as String,
-      winProbability: fields[2] as double,
-      exclusions: (fields[3] as List).cast<String>(),
-      imagePath: fields[4] as String?,
-    );
+      rewardId: fields[2] as String,
+      date: fields[3] as String,
+      isWon: fields[4] as bool,
+      isScratched: fields[5] as bool,
+    )..imagePath = fields[6] as String?;
   }
 
   @override
-  void write(BinaryWriter writer, RewardModel obj) {
+  void write(BinaryWriter writer, ScratchcardModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.winProbability)
+      ..write(obj.rewardId)
       ..writeByte(3)
-      ..write(obj.exclusions)
+      ..write(obj.date)
       ..writeByte(4)
+      ..write(obj.isWon)
+      ..writeByte(5)
+      ..write(obj.isScratched)
+      ..writeByte(6)
       ..write(obj.imagePath);
   }
 
@@ -47,7 +52,7 @@ class RewardModelAdapter extends TypeAdapter<RewardModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RewardModelAdapter &&
+      other is ScratchcardModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

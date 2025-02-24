@@ -18,7 +18,7 @@ class SettingsCard extends StatefulWidget {
   final ValueChanged<List<String>> onExclusionsChanged;
 
   const SettingsCard({
-    Key? key,
+    super.key,
     required this.reward,
     required this.index,
     required this.exclusions,
@@ -26,7 +26,7 @@ class SettingsCard extends StatefulWidget {
     required this.onNameChanged,
     required this.onProbabilityChanged,
     required this.onExclusionsChanged,
-  }) : super(key: key);
+  });
   
   @override
   State<SettingsCard> createState() => _SettingsCardState();
@@ -42,35 +42,60 @@ class _SettingsCardState extends State<SettingsCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // TODO update name option
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                widget.reward.name,
-                style: Theme.of(context).textTheme.titleMedium),
-              IconButton(onPressed: () {
-              widget.onDelete(widget.reward.id); 
-            }, icon: const Icon(Icons.delete),
-            color: Colors.red),
-            ],
-          ),
-          ProbabilitySlider(
-            initialProbability: widget.reward.winProbability,
-            onChanged: widget.onProbabilityChanged,
-          ),
-          ExclusionsWidget(
-            possibleExclusions: widget.exclusions,
-            selectedExclusions: widget.reward.exclusions,
-            onChanged: widget.onExclusionsChanged,
-          ),
+      margin: const EdgeInsets.all(8.0),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.reward.name,
+                  style: Theme.of(context).textTheme.titleMedium),
+                IconButton(onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Confirm Deletion"),
+                        content: const Text("Are you sure you want to delete this reward?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("Cancel"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              widget.onDelete(widget.reward.id);
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("Delete"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+              }, icon: const Icon(Icons.delete),
+              color: Colors.red),
+              ],
+            ),
+            ProbabilitySlider(
+              initialProbability: widget.reward.winProbability,
+              onChanged: widget.onProbabilityChanged,
+            ),
+            ExclusionsWidget(
+              possibleExclusions: widget.exclusions,
+              selectedExclusions: widget.reward.exclusions,
+              onChanged: widget.onExclusionsChanged,
+            ),
 
 
-        ],
+          ],
+        ),
       ),
     );
   }

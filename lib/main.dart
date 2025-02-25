@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'screens/scratchcard_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/history_screen.dart';
 import 'package:diabettys_reward/providers/reward_provider.dart';
 import 'package:diabettys_reward/providers/scratchcard_provider.dart';
 import 'package:diabettys_reward/providers/history_provider.dart';
@@ -20,6 +21,7 @@ void main() async {
   Hive.init(dir.path);
   // TODO: delete
   Hive.deleteBoxFromDisk("scratchcards");
+  // Hive.deleteBoxFromDisk("rewards");
   await Hive.openBox<RewardModel>('rewards');
   await Hive.openBox<List>('scratchcards');
 
@@ -59,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     ScratchcardScreen(),
+    HistoryScreen(),
     SettingsScreen(),
   ];
 
@@ -72,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Diabettys Reward'),
+        title: const Text("'Diabetty's Reward"),
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -82,6 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.card_giftcard),
             label: 'Scratch Cards',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

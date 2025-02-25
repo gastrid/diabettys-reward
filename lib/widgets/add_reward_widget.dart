@@ -68,6 +68,7 @@ class _AddRewardWidgetState extends State<AddRewardWidget> {
                       _exclusions = exclusions;
                     });
                   }),
+              const SizedBox(height: 20),
               ImageUploadWidget(
                 onChanged: (imagePath) {
                     setState(() {

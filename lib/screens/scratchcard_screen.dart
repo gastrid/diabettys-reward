@@ -24,11 +24,23 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
   late List<ScratchcardModel> _scratchcards;
   var _isLoading = false;
   late String _todayString;
+  late HistoryProvider _historyProvider;
+  late ScratchcardProvider _scratchcardProvider;
+  late RewardProvider _rewardProvider;
 
   @override
   void initState() {
     super.initState();
     _isLoading = true;
+        _historyProvider =
+        Provider.of<HistoryProvider>(context, listen: false);
+    _scratchcardProvider =
+        Provider.of<ScratchcardProvider>(context, listen: false);
+    _rewardProvider = Provider.of<RewardProvider>(context, listen: false);
+    _rewardProvider.rewardCount.addListener(() {
+      _historyProvider.clear();
+      _getScratchcards();
+    });
     _getScratchcards().then((_) {
       setState(() {
         _isLoading = false;
@@ -36,9 +48,10 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
     });
   }
 
-// TODO: just show result when isScratched is true
+// TODO: Update scratchcards when new rewards are added
   @override
   Widget build(BuildContext context) {
+    print("rebuild");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scratch Card'),
@@ -50,8 +63,6 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
               itemBuilder: (ctx, index) {
                 final scratchcard = _scratchcards[index];
                 final scratchKey = GlobalKey<ScratcherState>();
-
-                print("${scratchcard.name} ${scratchcard.isScratched}");
 
                 return Column(
                   children: [
@@ -130,28 +141,23 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
   }
 
   Future<void> _getScratchcards() async {
-    final historyProvider =
-        Provider.of<HistoryProvider>(context, listen: false);
-    final scratchcardProvider =
-        Provider.of<ScratchcardProvider>(context, listen: false);
-    final rewardProvider = Provider.of<RewardProvider>(context, listen: false);
-    String latestActiveDate = await historyProvider.getLatestActiveDate();
+    String latestActiveDate = await _historyProvider.getLatestActiveDate();
 
     DateTime today = DateTime.now();
     _todayString = DateFormat(dateFormat).format(today);
     List<ScratchcardModel>? scratchcards;
     if (_todayString == latestActiveDate) {
-      scratchcards = scratchcardProvider.getScratchcards(_todayString);
+      scratchcards = _scratchcardProvider.getScratchcards(_todayString);
       if (scratchcards != null) {
         _scratchcards = scratchcards;
         return;
       }
     }
     if (scratchcards == null || scratchcards.isEmpty) {
-      final rewards = rewardProvider.getRewards();
+      final rewards = _rewardProvider.getRewards();
       _generateScratchcards(rewards, _todayString);
-      scratchcardProvider.addScratchcards(_todayString, _scratchcards);
-      historyProvider.setLatestActiveDate(_todayString);
+      _scratchcardProvider.addScratchcards(_todayString, _scratchcards);
+      _historyProvider.setLatestActiveDate(_todayString);
     }
   }
 

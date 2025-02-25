@@ -20,12 +20,16 @@ class RewardModel {
   @HiveField(4)
   String? imagePath;
 
+  @HiveField(5)
+  bool isActive;
+
   RewardModel({
     required this.id,
     required this.name,
     required this.winProbability,
     required this.exclusions,
     this.imagePath,
+    this.isActive = true,
   });
 
   // Method to check if a reward excludes another reward

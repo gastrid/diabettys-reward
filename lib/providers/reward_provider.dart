@@ -6,21 +6,19 @@ import 'package:diabettys_reward/utils/exceptions.dart';
 
 class RewardProvider extends ChangeNotifier {
   late Box<RewardModel> _rewards;
+  final ValueNotifier<int> rewardCount = ValueNotifier(0);
+
 
   RewardProvider() {
-
-      _rewards = Hive.box("rewards");
-      // var reward = RewardModel(
-      //   id: Uuid().v4(),
-      //   name: 'New Reward',
-      //   winProbability: 0.5,
-      //   exclusions: []
-      // );
-      // addReward(reward);
+    _rewards = Hive.box("rewards");
+    rewardCount.value = _rewards.values.where((r) => r.isActive == true).length;
   }
 
-
   List<RewardModel> getRewards() {
+    return _rewards.values.where((r) => r.isActive == true).toList();
+  }
+
+  List<RewardModel> getAllrewards() {
     return _rewards.values.toList();
   }
 
@@ -33,7 +31,8 @@ class RewardProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateRewardWinProbability(String uuid, double newWinProbability) async {
+  Future<void> updateRewardWinProbability(
+      String uuid, double newWinProbability) async {
     final reward = _rewards.get(uuid);
     if (reward != null) {
       reward.winProbability = newWinProbability;
@@ -42,7 +41,7 @@ class RewardProvider extends ChangeNotifier {
     }
   }
 
-    Future<void> updateRewardImagePath(String uuid, String newImagePath) async {
+  Future<void> updateRewardImagePath(String uuid, String newImagePath) async {
     final reward = _rewards.get(uuid);
     if (reward != null) {
       reward.imagePath = newImagePath;
@@ -51,7 +50,8 @@ class RewardProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateRewardExclusions(String uuid, List<String> newExclusions) async {
+  Future<void> updateRewardExclusions(
+      String uuid, List<String> newExclusions) async {
     final reward = _rewards.get(uuid);
     if (reward != null) {
       reward.exclusions = newExclusions;
@@ -60,21 +60,23 @@ class RewardProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addReward(String rewardName, double winProbability, List<String> exclusions, {String? imagePath}) async {
+  Future<void> addReward(
+      String rewardName, double winProbability, List<String> exclusions,
+      {String? imagePath}) async {
     if (_rewards.values.any((reward) => reward.name == rewardName)) {
       throw NameDuplicateException(name: rewardName);
     }
     final uuid = const Uuid().v4();
     final reward = RewardModel(
-      id: uuid,
-      name: rewardName,
-      winProbability: winProbability,
-      exclusions: exclusions
-    );
+        id: uuid,
+        name: rewardName,
+        winProbability: winProbability,
+        exclusions: exclusions);
     if (imagePath != null) {
       reward.imagePath = imagePath;
     }
     await _rewards.put(uuid, reward);
+    rewardCount.value++;
     notifyListeners();
   }
 
@@ -84,11 +86,16 @@ class RewardProvider extends ChangeNotifier {
   }
 
   Future<void> deleteReward(String uuid) async {
-    await _rewards.delete(uuid);
-    for (var reward in _rewards.values) {
-      reward.exclusions.remove(uuid);
-      await _rewards.put(reward.id, reward);
+    final reward = _rewards.get(uuid);
+    if (reward != null) {
+      reward.isActive = false;
+      await _rewards.put(uuid, reward);
+      for (var reward in _rewards.values) {
+        reward.exclusions.remove(uuid);
+        await _rewards.put(reward.id, reward);
+      }
+      rewardCount.value--;
+      notifyListeners();
     }
-    notifyListeners();
   }
 }

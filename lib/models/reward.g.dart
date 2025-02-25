@@ -22,13 +22,14 @@ class RewardModelAdapter extends TypeAdapter<RewardModel> {
       winProbability: fields[2] as double,
       exclusions: (fields[3] as List).cast<String>(),
       imagePath: fields[4] as String?,
+      isActive: fields[5] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, RewardModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class RewardModelAdapter extends TypeAdapter<RewardModel> {
       ..writeByte(3)
       ..write(obj.exclusions)
       ..writeByte(4)
-      ..write(obj.imagePath);
+      ..write(obj.imagePath)
+      ..writeByte(5)
+      ..write(obj.isActive);
   }
 
   @override

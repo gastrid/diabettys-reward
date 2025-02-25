@@ -23,7 +23,8 @@ class ScratchcardModelAdapter extends TypeAdapter<ScratchcardModel> {
       date: fields[3] as String,
       isWon: fields[4] as bool,
       isScratched: fields[5] as bool,
-    )..imagePath = fields[6] as String?;
+      imagePath: fields[6] as String?,
+    );
   }
 
   @override

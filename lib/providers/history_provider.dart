@@ -19,4 +19,9 @@ class HistoryProvider extends ChangeNotifier {
     final prefs = await instanceFuture;
     await prefs.setString('latestActiveDate', date);
   }
+
+  Future<void> clear() async {
+    final prefs = await instanceFuture;
+    await prefs.clear();
+  }
 }

@@ -12,7 +12,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 
-// PICKUP: pick hierarchy for exclusions
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
@@ -44,6 +43,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _updateRewardExclusions(reward.id, newExclusions)
                     },
                     onNameChanged: (name) => _updateRewardName(reward.id, name),
+                    onImagePathChanged: (value) => _updateRewardImagePath(reward.id, value),
                   );
                 },
               ),
@@ -71,6 +71,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       Provider.of<RewardProvider>(context, listen: false)
           .updateRewardWinProbability(uuid, newProbability);
+    });
+  }
+
+  void _updateRewardImagePath(String uuid, String imagePath) {
+    setState(() {
+      Provider.of<RewardProvider>(context, listen: false)
+          .updateRewardImagePath(uuid, imagePath);
     });
   }
 

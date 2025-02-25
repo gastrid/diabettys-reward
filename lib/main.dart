@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'screens/scratchcard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'package:diabettys_reward/providers/reward_provider.dart';
@@ -9,6 +10,7 @@ import 'package:hive/hive.dart';
 import 'package:diabettys_reward/models/scratchcard.dart';
 import 'package:diabettys_reward/models/reward.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:diabettys_reward/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,11 +23,11 @@ void main() async {
   await Hive.openBox<RewardModel>('rewards');
   await Hive.openBox<List>('scratchcards');
 
-  runApp(const MyApp());
+  runApp( const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +39,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        theme: AppTheme.theme,
         home: const HomeScreen(),
       ),
     );

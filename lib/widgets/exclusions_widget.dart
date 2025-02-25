@@ -41,6 +41,7 @@ class _ExclusionsWidgetState extends State<ExclusionsWidget> {
         Expanded(
           child: Wrap(
             spacing: 5.0,
+            runSpacing: 5.0,
             children: widget.possibleExclusions.entries.map((entry) {
               return InputChip(
                 label: Text(entry.value),

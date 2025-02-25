@@ -74,8 +74,8 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
                             ? Container(
                                 height: 120,
                                 color: scratchcard.isWon
-                                    ? Colors.green
-                                    : Colors.red,
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context).colorScheme.error,
                                 child: Center(
                                   child: Text(
                                     scratchcard.isWon ? 'You won!' : 'No luck',
@@ -94,15 +94,14 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
                                 threshold: 50,
                                 onThreshold: () {
                                   scratchcard.isScratched = true;
-                                  // PICKUP: fix this reveal thing
                                   _updateScratched(
                                       _todayString, scratchcard.id);
                                 },
                                 child: Container(
                                   height: 120,
                                   color: scratchcard.isWon
-                                      ? Colors.green
-                                      : Colors.red,
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context).colorScheme.error,
                                   child: Center(
                                     child: Text(
                                       scratchcard.isWon

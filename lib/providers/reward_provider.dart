@@ -42,6 +42,15 @@ class RewardProvider extends ChangeNotifier {
     }
   }
 
+    Future<void> updateRewardImagePath(String uuid, String newImagePath) async {
+    final reward = _rewards.get(uuid);
+    if (reward != null) {
+      reward.imagePath = newImagePath;
+      await _rewards.put(uuid, reward);
+      notifyListeners();
+    }
+  }
+
   Future<void> updateRewardExclusions(String uuid, List<String> newExclusions) async {
     final reward = _rewards.get(uuid);
     if (reward != null) {

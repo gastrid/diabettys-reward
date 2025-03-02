@@ -9,3 +9,15 @@ class NameDuplicateException implements Exception {
   @override
   String toString() => "NameDuplicateException: $message";
 }
+
+class OffsetOverListLengthException implements Exception {
+  final String listName;
+  late String message;
+
+  OffsetOverListLengthException({required this.listName}) {
+    message = "Offset went over length of'$listName'";
+  }
+
+  @override
+  String toString() => "OffsetOverListLengthException: $message";
+}

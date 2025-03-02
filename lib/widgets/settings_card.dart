@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:diabettys_reward/widgets/probability_slider_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:diabettys_reward/models/reward.dart';
@@ -39,11 +37,6 @@ class SettingsCard extends StatefulWidget {
 }
 
 class _SettingsCardState extends State<SettingsCard> {
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {

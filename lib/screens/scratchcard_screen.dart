@@ -48,10 +48,8 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
     });
   }
 
-// TODO: Update scratchcards when new rewards are added
   @override
   Widget build(BuildContext context) {
-    print("rebuild");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scratch Card'),
@@ -70,7 +68,7 @@ class _ScratchcardScreenState extends State<ScratchcardScreen> {
                         style: Theme.of(context).textTheme.titleMedium),
                     Container(
                       margin: const EdgeInsets.fromLTRB(30, 5, 30, 20),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black26,

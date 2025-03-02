@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:diabettys_reward/models/reward.dart';
 import 'package:uuid/uuid.dart';
 import 'package:diabettys_reward/utils/exceptions.dart';
@@ -97,5 +97,12 @@ class RewardProvider extends ChangeNotifier {
       rewardCount.value--;
       notifyListeners();
     }
+  }
+
+  Future<void> deleteAllEntries() async {
+    _rewards.clear();
+    rewardCount.value = 0;
+    
+    notifyListeners();
   }
 }
